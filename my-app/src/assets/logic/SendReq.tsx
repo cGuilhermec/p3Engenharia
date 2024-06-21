@@ -67,38 +67,58 @@ export const BtnEnviarReq = () => {
 
 
     const getAll = async () => {
-        try {
-            setLogs(prevLogs => [...prevLogs, `${currentDateTime} - Buscando todos os dados...`]);
-            const infos: any[] = [];
+    try {
+        const infos: any[] = [];
 
+        // Busca dados do PostgreSQL
+        try {
             const responsePostgres = await api.get('/users-postgres');
             if (responsePostgres.data) {
                 responsePostgres.data.forEach((item: any) => {
                     infos.push({ ...item, source: "POSTGRES" });
                 });
+            } else {
+                console.log("Não há dados válidos retornados do PostgreSQL");
             }
+        } catch (error) {
+            console.error("Erro ao buscar dados do PostgreSQL:", error);
+        }
 
+        // Busca dados do MySQL
+        try {
             const responseMySql = await api.get('/users-mysql');
             if (responseMySql.data) {
                 responseMySql.data.forEach((item: any) => {
                     infos.push({ ...item, source: "MYSQL" });
                 });
+            } else {
+                console.log("Não há dados válidos retornados do MySQL");
             }
+        } catch (error) {
+            console.error("Erro ao buscar dados do MySQL:", error);
+        }
 
+        // Busca dados do MongoDB
+        try {
             const responseMongoDB = await api.get('/users-mongodb');
             if (responseMongoDB.data) {
                 responseMongoDB.data.forEach((item: any) => {
                     infos.push({ ...item, source: "MongoDB" });
                 });
+            } else {
+                console.log("Não há dados válidos retornados do MongoDB");
             }
-
-            console.log("Todos os dados:", infos);
-            return infos;
         } catch (error) {
-            console.error("Erro ao buscar todos os dados:", error);
-            return [];
+            console.error("Erro ao buscar dados do MongoDB:", error);
         }
-    };
+
+        console.log("Todos os dados:", infos);
+        return infos;
+    } catch (error) {
+        console.error("Erro ao buscar todos os dados:", error);
+        return [];
+    }
+};
 
 
     const downloadLogs = () => {

@@ -98,7 +98,7 @@ export class Controller {
 
         try {
             
-            await apiMySQL.post('/create-user', 
+            await apiMongoDb.post('/create-user', 
                 {
                     name: name,
                     cpf: cpf,
